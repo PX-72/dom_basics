@@ -1,13 +1,12 @@
 import { createPortfolio } from './portfolio.js';
 
 export const createContext = contextData => {
-
-    console.log(`loading index`);
+    console.log('loading index');
 
     const component = document.createElement('div');
 
     const contextId = document.createElement('p');
-    contextId.innerText = `Context ID : ${contextData.id}`;
+    contextId.innerText = `Context ID: ${contextData.id}`;
 
     const definition = document.createElement('p');
     definition.innerText = `Definition: ${contextData.definition}`;

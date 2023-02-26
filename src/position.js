@@ -1,36 +1,31 @@
-import { updatePositionQuantity } from './state/stateService.js'
-
+import { updatePositionQuantity } from './state/state-service.js';
 
 const toggleVisibility = (elements = [], visibleStyle = 'inline-block') => {
     elements.forEach(element => {
-        element.style.display = (element.style.display === 'none') ? visibleStyle : 'none'
+        element.style.display = element.style.display === 'none' ? visibleStyle : 'none';
     });
-}
+};
 
 const createButton = (label, show = true) => {
     const button = document.createElement('button');
     button.innerText = label;
-    button.style.display = 'inline-block';
     button.style.marginLeft = '0.5rem';
     button.style.cursor = 'pointer';
+    button.style.display = show ? 'inline-block' : 'none';
 
-    if (!show) {
-        button.style.display = 'none'
-    }
+    return button;
+};
 
-    return button
-}
-
-const createQtyTextInput = (onchange, qty) => {
+const createQtyTextInput = (qty = '') => {
     const input = document.createElement('input');
     input.type = 'text';
-    input.value = qty?.toString();
+    input.value = qty;
     input.style.marginLeft = '0.5rem';
     input.style.width = '3rem';
     input.style.display = 'none';
 
     return input;
-}
+};
 
 const createQtyText = qty => {
     const span = document.createElement('span');
@@ -38,14 +33,14 @@ const createQtyText = qty => {
     span.innerText = qty;
 
     return span;
-}
+};
 
 const createQtyLabel = () => {
     const span = document.createElement('span');
     span.innerText = 'Quantity: ';
 
     return span;
-}
+};
 
 const createQtyControl = (positionId, qty) => {
     const component = document.createElement('div');
@@ -54,7 +49,7 @@ const createQtyControl = (positionId, qty) => {
     component.appendChild(createQtyLabel());
 
     const qtyText = createQtyText(qty);
-    const qtyInput = createQtyTextInput(() => {}, qty);
+    const qtyInput = createQtyTextInput(qty);
     const editButton = createButton('edit');
     const saveButton = createButton('save', false);
 
@@ -69,12 +64,12 @@ const createQtyControl = (positionId, qty) => {
     });
 
     qtyInput.addEventListener('input', () => {
-        
-        if (isNaN(qtyInput.value)) {
+        if (!Number.isFinite(Number(qtyInput.value))) {
             qtyInput.value = qtyText.innerText;
             return;
         }
-        qtyText.innerText = !qtyInput.value ? 0 : qtyInput.value;
+
+        qtyText.innerText = qtyInput.value || '0';
     });
 
     component.appendChild(qtyText);
@@ -83,10 +78,9 @@ const createQtyControl = (positionId, qty) => {
     component.appendChild(saveButton);
 
     return component;
-}
+};
 
 export const createPosition = positionData => {
-
     console.log(`loading position: ${positionData.positionId}`);
 
     const component = document.createElement('div');

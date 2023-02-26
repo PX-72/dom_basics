@@ -1,47 +1,47 @@
-const actions = Object.freeze({
+const ACTIONS = Object.freeze({
     POSITIONS_UPDATED: 'positions_updated'
 });
 
 let contextState = {};
 
 export const initialseContextState = (data = {}) => {
-    contextState = JSON.parse(JSON.stringify(data?.context ?? {}));
+    contextState = structuredClone(data?.context ?? {});
 };
 
-export const getContextState = () => contextState = JSON.parse(JSON.stringify(contextState));
+export const getContextState = () => structuredClone(contextState);
 
 const subscribers = new Map();
 
-const subscribe = (action, fn) => {
+const subscribe = (action, subscriber) => {
     if (!subscribers.has(action)) {
         subscribers.set(action, []);
     }
-
-    subscribers.get(action).push(fn);
+    
+    subscribers.get(action).push(subscriber);
 };
 
 export const subscribeToPositionUpdates = callback => {
-    subscribe(actions.POSITIONS_UPDATED, callback);
+    subscribe(ACTIONS.POSITIONS_UPDATED, callback);
 };
 
 export const updatePositionQuantity = (positionId, newQuantity) => {
-    const {portfolio: {positions}} = contextState;
+    const { portfolio: { positions } } = contextState;
 
-    let updated = false;
     for (const position of positions) {
-        if (position.positionId === positionId && position.quantity !== newQuantity) {
-            position.quantity = newQuantity;
-            updated = true;
+        if (position.positionId === positionId) {
+            if (position.quantity !== newQuantity) {
+                position.quantity = newQuantity;
+                
+                for (const subscriber of subscribers.get(ACTIONS.POSITIONS_UPDATED)) {
+                    const { portfolio: { positions } } = contextState;
+                    subscriber(structuredClone(positions));
+                }
+            }
+
             break;
         }
     }
 
-    if (updated) {
-        for (const fn of subscribers.get(actions.POSITIONS_UPDATED)) {
-            const {portfolio: {positions}} = contextState;
-            fn(JSON.parse(JSON.stringify(positions)));
-        }
-    }
     // const positionToUpdate = positions.find(p => p.id === positionId);
 
     // if (positionToUpdate == null) {
@@ -51,4 +51,4 @@ export const updatePositionQuantity = (positionId, newQuantity) => {
 
     // positionToUpdate.quantity = newQuantity;
     // contextState.portfolio.positions = [...positions.filter(p => p.id !== positionId), positionToUpdate];
-}
+};

@@ -1,5 +1,5 @@
 import { createPositionList } from './position-list.js';
-import { subscribeToPositionUpdates } from './state/stateService.js'
+import { subscribeToPositionUpdates } from './state/state-service.js';
 
 let sumPartDomRef = {};
 
@@ -10,8 +10,7 @@ subscribeToPositionUpdates((positions = []) => {
 });
 
 export const createPortfolio = portfolioData => {
-
-    console.log(`loading portfolio`);
+    console.log('loading portfolio');
 
     const component = document.createElement('div');
 

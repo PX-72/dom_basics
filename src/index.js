@@ -1,15 +1,15 @@
 import { createContext } from './context.js';
-import { getContext } from './api/apiService.js';
-import { initialseContextState, getContextState } from './state/stateService.js';
+import { getContext } from './api/api-service.js';
+import { initialseContextState, getContextState } from './state/state-service.js';
 
 const app = document.querySelector('#app');
 
 const loader = document.createElement('p');
-loader.innerText = 'LOADING...';
+loader.innerText = 'Loading...';
 app.appendChild(loader);
 
-const init = async (simulate_delay_ms = 1000) => {
-    const contextData = await getContext(simulate_delay_ms);
+const init = async (simulatedDelay = 1_000) => {
+    const contextData = await getContext(simulatedDelay);
     initialseContextState(contextData);
     loader.remove();
 
@@ -17,6 +17,6 @@ const init = async (simulate_delay_ms = 1000) => {
 
     const contextComponent = createContext(contextState);
     app.appendChild(contextComponent);
-}
+};
 
 await init();

@@ -1,8 +1,7 @@
-import { createPosition } from "./position.js";
+import { createPosition } from './position.js';
 
 export const createPositionList = positionListData => {
-
-    console.log(`loading position list`);
+    console.log('loading position list');
 
     const component = document.createElement('div');
 
@@ -10,7 +9,7 @@ export const createPositionList = positionListData => {
     header.innerText = 'Positions:';
     component.appendChild(header);
 
-    positionListData.map( position => component.appendChild(createPosition(position)) );
+    positionListData.forEach(position => component.appendChild(createPosition(position)));
 
     return component;
 };

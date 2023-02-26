@@ -1,4 +1,4 @@
-const data = {
+const DATA = {
     context: {
         id: 123,
         definition: 'portfolio-only',
@@ -15,7 +15,7 @@ const data = {
                 {
                     positionId: 2,
                     insightId: '2847347',
-                    quantity: 1000       
+                    quantity: 1_000       
                 },
                 {
                     positionId: 3,
@@ -32,10 +32,9 @@ const data = {
     }
 };
 
-const delay = time_ms => new Promise(resolve => setTimeout(resolve, time_ms));
+const delay = time => new Promise(resolve => setTimeout(resolve, time));
 
-export const getContext = async network_delay => {
-    await delay(network_delay);
-    return JSON.parse(JSON.stringify(data));
+export const getContext = async networkDelay => {
+    await delay(networkDelay);
+    return structuredClone(DATA);
 };
-
