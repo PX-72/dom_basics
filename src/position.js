@@ -1,7 +1,5 @@
+import { updatePositionQuantity } from './state/stateService.js'
 
-const localState = {
-    positionQuantity: 0
-};
 
 const toggleVisibility = (elements = [], visibleStyle = 'inline-block') => {
     elements.forEach(element => {
@@ -49,7 +47,7 @@ const createQtyLabel = () => {
     return span;
 }
 
-const createQtyControl = qty => {
+const createQtyControl = (positionId, qty) => {
     const component = document.createElement('div');
     component.style.display = 'flex';
     
@@ -61,26 +59,22 @@ const createQtyControl = qty => {
     const saveButton = createButton('save', false);
 
     editButton.addEventListener('click', () => {
-        toggleVisibility([editButton, saveButton, qtyText, qtyInput])
-        qtyInput.value = localState.positionQuantity;
+        toggleVisibility([editButton, saveButton, qtyText, qtyInput]);
+        qtyInput.value = qtyText.innerText;
     });
 
     saveButton.addEventListener('click', () => {
         toggleVisibility([editButton, saveButton, qtyText, qtyInput]);
-
+        updatePositionQuantity(positionId, Number(qtyInput.value));
     });
 
     qtyInput.addEventListener('input', () => {
         
         if (isNaN(qtyInput.value)) {
-            qtyInput.value = localState.positionQuantity;
+            qtyInput.value = qtyText.innerText;
             return;
         }
-
-        const newQty = !qtyInput.value ? 0 : qtyInput.value;
-
-        localState.positionQuantity = newQty;
-        qtyText.innerText = newQty;
+        qtyText.innerText = !qtyInput.value ? 0 : qtyInput.value;
     });
 
     component.appendChild(qtyText);
@@ -95,9 +89,6 @@ export const createPosition = positionData => {
 
     console.log(`loading position: ${positionData.positionId}`);
 
-    // initialise local state:
-    localState.positionQuantity = positionData.quantity ?? 0
-
     const component = document.createElement('div');
     component.style.margin = '0.8rem';
     component.style.borderTop = '1px solid #336';
@@ -111,7 +102,7 @@ export const createPosition = positionData => {
     insightId.innerText = `Insight ID: ${positionData.insightId}`;
     component.appendChild(insightId);
 
-    const quantity = createQtyControl(positionData.quantity);
+    const quantity = createQtyControl(positionData.positionId, positionData.quantity);
     component.appendChild(quantity);
 
     return component;

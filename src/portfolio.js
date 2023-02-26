@@ -1,9 +1,13 @@
-import { createPositionList } from "./position-list.js";
+import { createPositionList } from './position-list.js';
+import { subscribeToPositionUpdates } from './state/stateService.js'
 
-const sumPositionQty = portfolioData => {
-    const positions = portfolioData.positions;
-    return positions.reduce((sum, position) => sum + position.quantity, 0);
-};
+let sumPartDomRef = {};
+
+const sumPositionQty = (positions = []) => positions.reduce((sum, position) => sum + position.quantity, 0);
+
+subscribeToPositionUpdates((positions = []) => {
+    sumPartDomRef.innerText = sumPositionQty(positions);
+});
 
 export const createPortfolio = portfolioData => {
 
@@ -26,7 +30,8 @@ export const createPortfolio = portfolioData => {
     const sumPart = document.createElement('span');
     sumPart.style.fontWeight = 'bold';
     sumPart.style.color = 'red';
-    sumPart.innerText = sumPositionQty(portfolioData);
+    sumPart.innerText = sumPositionQty(portfolioData.positions);
+    sumPartDomRef = sumPart;
     positionQtySum.appendChild(sumPart);
 
     component.appendChild(positionQtySum);

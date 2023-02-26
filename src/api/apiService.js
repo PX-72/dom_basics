@@ -1,4 +1,4 @@
-export const data = {
+const data = {
     context: {
         id: 123,
         definition: 'portfolio-only',
@@ -31,3 +31,11 @@ export const data = {
         }
     }
 };
+
+const delay = time_ms => new Promise(resolve => setTimeout(resolve, time_ms));
+
+export const getContext = async network_delay => {
+    await delay(network_delay);
+    return JSON.parse(JSON.stringify(data));
+};
+
